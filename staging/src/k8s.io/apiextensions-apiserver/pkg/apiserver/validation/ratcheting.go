@@ -54,14 +54,26 @@ func NewRatchetingSchemaValidator(schema *spec.Schema, rootSchema interface{}, r
 	}
 }
 
-func (r *RatchetingSchemaValidator) Validate(new interface{}) *validate.Result {
+func (r *RatchetingSchemaValidator) Validate(new interface{}, options ...ValidationOption) *validate.Result {
 	sv := validate.NewSchemaValidator(r.schema, r.root, r.path, r.knownFormats, r.options...)
 	return sv.Validate(new)
 }
 
-func (r *RatchetingSchemaValidator) ValidateUpdate(new, old interface{}) *validate.Result {
+func (r *RatchetingSchemaValidator) ValidateUpdate(new, old interface{}, options ...ValidationOption) *validate.Result {
+	opts := NewValidationOptions(options...)
+
+	if !opts.Ratcheting {
+		sv := validate.NewSchemaValidator(r.schema, r.root, r.path, r.knownFormats, r.options...)
+		return sv.Validate(new)
+	}
+
+	correlation := opts.CorrelatedObject
+	if correlation == nil {
+		correlation = common.NewCorrelatedObject(new, old, &celopenapi.Schema{Schema: r.schema})
+	}
+
 	return newRatchetingValueValidator(
-		common.NewCorrelatedObject(new, old, &celopenapi.Schema{Schema: r.schemaArgs.schema}),
+		correlation,
 		r.schemaArgs,
 	).Validate(new)
 }
@@ -153,7 +165,13 @@ func (r *ratchetingValueValidator) Validate(new interface{}) *validate.Result {
 // If the old value cannot be correlated, then default validation is used.
 func (r *ratchetingValueValidator) SubPropertyValidator(field string, schema *spec.Schema, rootSchema interface{}, root string, formats strfmt.Registry, options ...validate.Option) validate.ValueValidator {
 	childNode := r.correlation.Key(field)
-	if childNode == nil {
+	if childNode == nil || (r.path == "" && isTypeMetaField(field)) {
+		// Defer to default validation if we cannot correlate the old value
+		// or if we are validating the root object and the field is a metadata
+		// field.
+		//
+		// We cannot ratchet changes to the APIVersion field since they aren't visible.
+		// (both old and new are converted to the same type)
 		return validate.NewSchemaValidator(schema, rootSchema, root, formats, options...)
 	}
 
@@ -197,4 +215,8 @@ func (r ratchetingValueValidator) SetPath(path string) {
 
 func (r ratchetingValueValidator) Applies(source interface{}, valueKind reflect.Kind) bool {
 	return true
+}
+
+func isTypeMetaField(path string) bool {
+	return path == "kind" || path == "apiVersion"
 }

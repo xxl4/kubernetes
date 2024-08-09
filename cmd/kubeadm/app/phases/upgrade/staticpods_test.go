@@ -34,7 +34,7 @@ import (
 	certutil "k8s.io/client-go/util/cert"
 
 	kubeadmapi "k8s.io/kubernetes/cmd/kubeadm/app/apis/kubeadm"
-	kubeadmapiv1 "k8s.io/kubernetes/cmd/kubeadm/app/apis/kubeadm/v1beta3"
+	kubeadmapiv1 "k8s.io/kubernetes/cmd/kubeadm/app/apis/kubeadm/v1beta4"
 	"k8s.io/kubernetes/cmd/kubeadm/app/constants"
 	certsphase "k8s.io/kubernetes/cmd/kubeadm/app/phases/certs"
 	"k8s.io/kubernetes/cmd/kubeadm/app/phases/certs/renewal"
@@ -98,6 +98,11 @@ func NewFakeStaticPodWaiter(errsToReturn map[string]error) apiclient.Waiter {
 	}
 }
 
+// WaitForControlPlaneComponents just returns a dummy nil, to indicate that the program should just proceed
+func (w *fakeWaiter) WaitForControlPlaneComponents(cfg *kubeadmapi.ClusterConfiguration) error {
+	return nil
+}
+
 // WaitForAPI just returns a dummy nil, to indicate that the program should just proceed
 func (w *fakeWaiter) WaitForAPI() error {
 	return nil
@@ -131,13 +136,8 @@ func (w *fakeWaiter) WaitForStaticPodHashChange(_, _, _ string) error {
 	return w.errsToReturn[waitForHashChange]
 }
 
-// WaitForHealthyKubelet returns a dummy nil just to implement the interface
-func (w *fakeWaiter) WaitForHealthyKubelet(_ time.Duration, _ string) error {
-	return nil
-}
-
-// WaitForKubeletAndFunc is a wrapper for WaitForHealthyKubelet that also blocks for a function
-func (w *fakeWaiter) WaitForKubeletAndFunc(f func() error) error {
+// WaitForHKubelet returns a dummy nil just to implement the interface
+func (w *fakeWaiter) WaitForKubelet(_ string, _ int32) error {
 	return nil
 }
 
@@ -329,9 +329,7 @@ func TestStaticPodControlPlane(t *testing.T) {
 				waitForHashChange:    nil,
 				waitForPodsWithLabel: nil,
 			},
-			moveFileFunc: func(oldPath, newPath string) error {
-				return os.Rename(oldPath, newPath)
-			},
+			moveFileFunc:         os.Rename,
 			expectedErr:          false,
 			manifestShouldChange: true,
 		},
@@ -342,9 +340,7 @@ func TestStaticPodControlPlane(t *testing.T) {
 				waitForHashChange:    nil,
 				waitForPodsWithLabel: nil,
 			},
-			moveFileFunc: func(oldPath, newPath string) error {
-				return os.Rename(oldPath, newPath)
-			},
+			moveFileFunc:         os.Rename,
 			expectedErr:          true,
 			manifestShouldChange: false,
 		},
@@ -355,9 +351,7 @@ func TestStaticPodControlPlane(t *testing.T) {
 				waitForHashChange:    errors.New("boo! failed"),
 				waitForPodsWithLabel: nil,
 			},
-			moveFileFunc: func(oldPath, newPath string) error {
-				return os.Rename(oldPath, newPath)
-			},
+			moveFileFunc:         os.Rename,
 			expectedErr:          true,
 			manifestShouldChange: false,
 		},
@@ -368,9 +362,7 @@ func TestStaticPodControlPlane(t *testing.T) {
 				waitForHashChange:    nil,
 				waitForPodsWithLabel: errors.New("boo! failed"),
 			},
-			moveFileFunc: func(oldPath, newPath string) error {
-				return os.Rename(oldPath, newPath)
-			},
+			moveFileFunc:         os.Rename,
 			expectedErr:          true,
 			manifestShouldChange: false,
 		},
@@ -432,9 +424,7 @@ func TestStaticPodControlPlane(t *testing.T) {
 				waitForHashChange:    nil,
 				waitForPodsWithLabel: nil,
 			},
-			moveFileFunc: func(oldPath, newPath string) error {
-				return os.Rename(oldPath, newPath)
-			},
+			moveFileFunc:         os.Rename,
 			skipKubeConfig:       constants.SchedulerKubeConfigFileName,
 			expectedErr:          true,
 			manifestShouldChange: false,
@@ -446,12 +436,33 @@ func TestStaticPodControlPlane(t *testing.T) {
 				waitForHashChange:    nil,
 				waitForPodsWithLabel: nil,
 			},
-			moveFileFunc: func(oldPath, newPath string) error {
-				return os.Rename(oldPath, newPath)
-			},
+			moveFileFunc:         os.Rename,
 			skipKubeConfig:       constants.AdminKubeConfigFileName,
 			expectedErr:          true,
 			manifestShouldChange: false,
+		},
+		{
+			description: "super-admin.conf is renewed if it exists",
+			waitErrsToReturn: map[string]error{
+				waitForHashes:        nil,
+				waitForHashChange:    nil,
+				waitForPodsWithLabel: nil,
+			},
+			moveFileFunc:         os.Rename,
+			expectedErr:          false,
+			manifestShouldChange: true,
+		},
+		{
+			description: "no error is thrown if super-admin.conf does not exist",
+			waitErrsToReturn: map[string]error{
+				waitForHashes:        nil,
+				waitForHashChange:    nil,
+				waitForPodsWithLabel: nil,
+			},
+			moveFileFunc:         os.Rename,
+			skipKubeConfig:       constants.SuperAdminKubeConfigFileName,
+			expectedErr:          false,
+			manifestShouldChange: true,
 		},
 	}
 
@@ -494,6 +505,7 @@ func TestStaticPodControlPlane(t *testing.T) {
 
 			for _, kubeConfig := range []string{
 				constants.AdminKubeConfigFileName,
+				constants.SuperAdminKubeConfigFileName,
 				constants.SchedulerKubeConfigFileName,
 				constants.ControllerManagerKubeConfigFileName,
 			} {

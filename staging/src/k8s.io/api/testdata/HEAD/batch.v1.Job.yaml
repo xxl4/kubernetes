@@ -38,6 +38,7 @@ spec:
   backoffLimitPerIndex: 12
   completionMode: completionModeValue
   completions: 2
+  managedBy: managedByValue
   manualSelector: true
   maxFailedIndexes: 13
   parallelism: 1
@@ -61,6 +62,10 @@ spec:
       - valuesValue
     matchLabels:
       matchLabelsKey: matchLabelsValue
+  successPolicy:
+    rules:
+    - succeededCount: 2
+      succeededIndexes: succeededIndexesValue
   suspend: true
   template:
     metadata:
@@ -135,6 +140,10 @@ spec:
                   - valuesValue
                 matchLabels:
                   matchLabelsKey: matchLabelsValue
+              matchLabelKeys:
+              - matchLabelKeysValue
+              mismatchLabelKeys:
+              - mismatchLabelKeysValue
               namespaceSelector:
                 matchExpressions:
                 - key: keyValue
@@ -156,6 +165,10 @@ spec:
                 - valuesValue
               matchLabels:
                 matchLabelsKey: matchLabelsValue
+            matchLabelKeys:
+            - matchLabelKeysValue
+            mismatchLabelKeys:
+            - mismatchLabelKeysValue
             namespaceSelector:
               matchExpressions:
               - key: keyValue
@@ -178,6 +191,10 @@ spec:
                   - valuesValue
                 matchLabels:
                   matchLabelsKey: matchLabelsValue
+              matchLabelKeys:
+              - matchLabelKeysValue
+              mismatchLabelKeys:
+              - mismatchLabelKeysValue
               namespaceSelector:
                 matchExpressions:
                 - key: keyValue
@@ -199,6 +216,10 @@ spec:
                 - valuesValue
               matchLabels:
                 matchLabelsKey: matchLabelsValue
+            matchLabelKeys:
+            - matchLabelKeysValue
+            mismatchLabelKeys:
+            - mismatchLabelKeysValue
             namespaceSelector:
               matchExpressions:
               - key: keyValue
@@ -341,6 +362,7 @@ spec:
         resources:
           claims:
           - name: nameValue
+            request: requestValue
           limits:
             limitsKey: "0"
           requests:
@@ -348,6 +370,9 @@ spec:
         restartPolicy: restartPolicyValue
         securityContext:
           allowPrivilegeEscalation: true
+          appArmorProfile:
+            localhostProfile: localhostProfileValue
+            type: typeValue
           capabilities:
             add:
             - addValue
@@ -409,6 +434,7 @@ spec:
           mountPropagation: mountPropagationValue
           name: nameValue
           readOnly: true
+          recursiveReadOnly: recursiveReadOnlyValue
           subPath: subPathValue
           subPathExpr: subPathExprValue
         workingDir: workingDirValue
@@ -552,6 +578,7 @@ spec:
         resources:
           claims:
           - name: nameValue
+            request: requestValue
           limits:
             limitsKey: "0"
           requests:
@@ -559,6 +586,9 @@ spec:
         restartPolicy: restartPolicyValue
         securityContext:
           allowPrivilegeEscalation: true
+          appArmorProfile:
+            localhostProfile: localhostProfileValue
+            type: typeValue
           capabilities:
             add:
             - addValue
@@ -621,6 +651,7 @@ spec:
           mountPropagation: mountPropagationValue
           name: nameValue
           readOnly: true
+          recursiveReadOnly: recursiveReadOnlyValue
           subPath: subPathValue
           subPathExpr: subPathExprValue
         workingDir: workingDirValue
@@ -765,6 +796,7 @@ spec:
         resources:
           claims:
           - name: nameValue
+            request: requestValue
           limits:
             limitsKey: "0"
           requests:
@@ -772,6 +804,9 @@ spec:
         restartPolicy: restartPolicyValue
         securityContext:
           allowPrivilegeEscalation: true
+          appArmorProfile:
+            localhostProfile: localhostProfileValue
+            type: typeValue
           capabilities:
             add:
             - addValue
@@ -833,6 +868,7 @@ spec:
           mountPropagation: mountPropagationValue
           name: nameValue
           readOnly: true
+          recursiveReadOnly: recursiveReadOnlyValue
           subPath: subPathValue
           subPathExpr: subPathExprValue
         workingDir: workingDirValue
@@ -850,15 +886,17 @@ spec:
       - conditionType: conditionTypeValue
       resourceClaims:
       - name: nameValue
-        source:
-          resourceClaimName: resourceClaimNameValue
-          resourceClaimTemplateName: resourceClaimTemplateNameValue
+        resourceClaimName: resourceClaimNameValue
+        resourceClaimTemplateName: resourceClaimTemplateNameValue
       restartPolicy: restartPolicyValue
       runtimeClassName: runtimeClassNameValue
       schedulerName: schedulerNameValue
       schedulingGates:
       - name: nameValue
       securityContext:
+        appArmorProfile:
+          localhostProfile: localhostProfileValue
+          type: typeValue
         fsGroup: 5
         fsGroupChangePolicy: fsGroupChangePolicyValue
         runAsGroup: 6
@@ -874,6 +912,7 @@ spec:
           type: typeValue
         supplementalGroups:
         - 4
+        supplementalGroupsPolicy: supplementalGroupsPolicyValue
         sysctls:
         - name: nameValue
           value: valueValue
@@ -1034,6 +1073,7 @@ spec:
                 matchLabels:
                   matchLabelsKey: matchLabelsValue
               storageClassName: storageClassNameValue
+              volumeAttributesClassName: volumeAttributesClassNameValue
               volumeMode: volumeModeValue
               volumeName: volumeNameValue
         fc:
@@ -1071,6 +1111,9 @@ spec:
         hostPath:
           path: pathValue
           type: typeValue
+        image:
+          pullPolicy: pullPolicyValue
+          reference: referenceValue
         iscsi:
           chapAuthDiscovery: true
           chapAuthSession: true
@@ -1103,7 +1146,20 @@ spec:
         projected:
           defaultMode: 2
           sources:
-          - configMap:
+          - clusterTrustBundle:
+              labelSelector:
+                matchExpressions:
+                - key: keyValue
+                  operator: operatorValue
+                  values:
+                  - valuesValue
+                matchLabels:
+                  matchLabelsKey: matchLabelsValue
+              name: nameValue
+              optional: true
+              path: pathValue
+              signerName: signerNameValue
+            configMap:
               items:
               - key: keyValue
                 mode: 3

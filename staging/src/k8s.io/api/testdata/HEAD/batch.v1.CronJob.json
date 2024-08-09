@@ -116,6 +116,14 @@
             }
           ]
         },
+        "successPolicy": {
+          "rules": [
+            {
+              "succeededIndexes": "succeededIndexesValue",
+              "succeededCount": 2
+            }
+          ]
+        },
         "backoffLimit": 7,
         "backoffLimitPerIndex": 12,
         "maxFailedIndexes": 13,
@@ -416,6 +424,26 @@
                         "audience": "audienceValue",
                         "expirationSeconds": 2,
                         "path": "pathValue"
+                      },
+                      "clusterTrustBundle": {
+                        "name": "nameValue",
+                        "signerName": "signerNameValue",
+                        "labelSelector": {
+                          "matchLabels": {
+                            "matchLabelsKey": "matchLabelsValue"
+                          },
+                          "matchExpressions": [
+                            {
+                              "key": "keyValue",
+                              "operator": "operatorValue",
+                              "values": [
+                                "valuesValue"
+                              ]
+                            }
+                          ]
+                        },
+                        "optional": true,
+                        "path": "pathValue"
                       }
                     }
                   ],
@@ -543,9 +571,14 @@
                         "kind": "kindValue",
                         "name": "nameValue",
                         "namespace": "namespaceValue"
-                      }
+                      },
+                      "volumeAttributesClassName": "volumeAttributesClassNameValue"
                     }
                   }
+                },
+                "image": {
+                  "reference": "referenceValue",
+                  "pullPolicy": "pullPolicyValue"
                 }
               }
             ],
@@ -618,7 +651,8 @@
                   },
                   "claims": [
                     {
-                      "name": "nameValue"
+                      "name": "nameValue",
+                      "request": "requestValue"
                     }
                   ]
                 },
@@ -633,6 +667,7 @@
                   {
                     "name": "nameValue",
                     "readOnly": true,
+                    "recursiveReadOnly": "recursiveReadOnlyValue",
                     "mountPath": "mountPathValue",
                     "subPath": "subPathValue",
                     "mountPropagation": "mountPropagationValue",
@@ -830,6 +865,10 @@
                   "allowPrivilegeEscalation": true,
                   "procMount": "procMountValue",
                   "seccompProfile": {
+                    "type": "typeValue",
+                    "localhostProfile": "localhostProfileValue"
+                  },
+                  "appArmorProfile": {
                     "type": "typeValue",
                     "localhostProfile": "localhostProfileValue"
                   }
@@ -908,7 +947,8 @@
                   },
                   "claims": [
                     {
-                      "name": "nameValue"
+                      "name": "nameValue",
+                      "request": "requestValue"
                     }
                   ]
                 },
@@ -923,6 +963,7 @@
                   {
                     "name": "nameValue",
                     "readOnly": true,
+                    "recursiveReadOnly": "recursiveReadOnlyValue",
                     "mountPath": "mountPathValue",
                     "subPath": "subPathValue",
                     "mountPropagation": "mountPropagationValue",
@@ -1120,6 +1161,10 @@
                   "allowPrivilegeEscalation": true,
                   "procMount": "procMountValue",
                   "seccompProfile": {
+                    "type": "typeValue",
+                    "localhostProfile": "localhostProfileValue"
+                  },
+                  "appArmorProfile": {
                     "type": "typeValue",
                     "localhostProfile": "localhostProfileValue"
                   }
@@ -1198,7 +1243,8 @@
                   },
                   "claims": [
                     {
-                      "name": "nameValue"
+                      "name": "nameValue",
+                      "request": "requestValue"
                     }
                   ]
                 },
@@ -1213,6 +1259,7 @@
                   {
                     "name": "nameValue",
                     "readOnly": true,
+                    "recursiveReadOnly": "recursiveReadOnlyValue",
                     "mountPath": "mountPathValue",
                     "subPath": "subPathValue",
                     "mountPropagation": "mountPropagationValue",
@@ -1412,6 +1459,10 @@
                   "seccompProfile": {
                     "type": "typeValue",
                     "localhostProfile": "localhostProfileValue"
+                  },
+                  "appArmorProfile": {
+                    "type": "typeValue",
+                    "localhostProfile": "localhostProfileValue"
                   }
                 },
                 "stdin": true,
@@ -1454,6 +1505,7 @@
               "supplementalGroups": [
                 4
               ],
+              "supplementalGroupsPolicy": "supplementalGroupsPolicyValue",
               "fsGroup": 5,
               "sysctls": [
                 {
@@ -1463,6 +1515,10 @@
               ],
               "fsGroupChangePolicy": "fsGroupChangePolicyValue",
               "seccompProfile": {
+                "type": "typeValue",
+                "localhostProfile": "localhostProfileValue"
+              },
+              "appArmorProfile": {
                 "type": "typeValue",
                 "localhostProfile": "localhostProfileValue"
               }
@@ -1560,7 +1616,13 @@
                           ]
                         }
                       ]
-                    }
+                    },
+                    "matchLabelKeys": [
+                      "matchLabelKeysValue"
+                    ],
+                    "mismatchLabelKeys": [
+                      "mismatchLabelKeysValue"
+                    ]
                   }
                 ],
                 "preferredDuringSchedulingIgnoredDuringExecution": [
@@ -1598,7 +1660,13 @@
                             ]
                           }
                         ]
-                      }
+                      },
+                      "matchLabelKeys": [
+                        "matchLabelKeysValue"
+                      ],
+                      "mismatchLabelKeys": [
+                        "mismatchLabelKeysValue"
+                      ]
                     }
                   }
                 ]
@@ -1637,7 +1705,13 @@
                           ]
                         }
                       ]
-                    }
+                    },
+                    "matchLabelKeys": [
+                      "matchLabelKeysValue"
+                    ],
+                    "mismatchLabelKeys": [
+                      "mismatchLabelKeysValue"
+                    ]
                   }
                 ],
                 "preferredDuringSchedulingIgnoredDuringExecution": [
@@ -1675,7 +1749,13 @@
                             ]
                           }
                         ]
-                      }
+                      },
+                      "matchLabelKeys": [
+                        "matchLabelKeysValue"
+                      ],
+                      "mismatchLabelKeys": [
+                        "mismatchLabelKeysValue"
+                      ]
                     }
                   }
                 ]
@@ -1766,10 +1846,8 @@
             "resourceClaims": [
               {
                 "name": "nameValue",
-                "source": {
-                  "resourceClaimName": "resourceClaimNameValue",
-                  "resourceClaimTemplateName": "resourceClaimTemplateNameValue"
-                }
+                "resourceClaimName": "resourceClaimNameValue",
+                "resourceClaimTemplateName": "resourceClaimTemplateNameValue"
               }
             ]
           }
@@ -1777,7 +1855,8 @@
         "ttlSecondsAfterFinished": 8,
         "completionMode": "completionModeValue",
         "suspend": true,
-        "podReplacementPolicy": "podReplacementPolicyValue"
+        "podReplacementPolicy": "podReplacementPolicyValue",
+        "managedBy": "managedByValue"
       }
     },
     "successfulJobsHistoryLimit": 6,
